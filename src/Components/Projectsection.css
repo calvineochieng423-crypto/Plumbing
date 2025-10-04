@@ -1,0 +1,151 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.project-wrapper {
+    overflow: hidden;
+}
+
+.project-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 25px;
+    padding: 2rem 3rem;
+    margin-bottom: 1rem;
+
+}
+
+.project-intro {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-basis: 30%;
+    gap: 10px;
+}
+
+.project-intro h2 {
+    font-size: clamp(2rem, 6vw, 2.8rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+.project-intro p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #555;
+    font-style: italic;
+}
+
+.project-intro a {
+    display: inline-block;
+    padding: 12px 30px;
+    border-radius: 8px;
+    background: #111;
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    border: 2px solid #111;
+    transition: all 0.3s ease-in-out;
+}
+
+.project-intro a:hover {
+    background: #fff;
+    color: #111;
+}
+
+.project-image {
+    flex-basis: 40%;
+    overflow: hidden;
+    max-width: 400px;
+    max-height: 600px;
+    border: 1px solid #111;
+    border-radius: 50%;
+}
+
+.project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.project-prof {
+    flex-basis: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.project-prof .numbers {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.project-prof .numbers p {
+    font-size: 2rem;
+    color: #0d0d0e;
+    font-weight: 500;
+    padding: 15px 30px;
+    border: 1px solid #555;
+    border-radius: 50px;
+    font-style: italic;
+}
+
+.project-prof .numbers span {
+    font-size: 2rem;
+    font-weight: 800;
+    font-family: 'Courier New', Courier, monospace;
+    font-style: italic;
+    transition: all 0.3s ease;
+}
+
+.project-prof .numbers span:hover {
+    transform: scale(1.1);
+}
+
+@media (max-width: 1000px) {
+    .project-page {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 2rem 1.5rem;
+        gap: 2rem;
+    }
+
+    .project-intro,
+    .project-image,
+    .project-prof {
+        flex-basis: 100%;
+        text-align: center;
+    }
+
+    .project-intro a {
+        width: 100%;
+        text-align: center;
+    }
+
+    .project-image {
+        max-width: 80%;
+        max-height: 700px;
+        border-radius: 50px;
+        border: none;
+    }
+
+    .project-prof .numbers p {
+        padding: 10px 20px;
+        font-size: 1.6rem;
+    }
+
+    .project-prof .numbers span {
+        font-size: 1.6rem;
+    }
+}

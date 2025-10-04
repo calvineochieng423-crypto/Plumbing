@@ -1,0 +1,55 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.why-choose-us {
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+}
+
+.reasons-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 40px;
+}
+
+.reason-card {
+    background: #fff;
+    padding: 30px 20px;
+    border-radius: 16px;
+    width: 300px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.reason-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.icon-wrapper svg {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 20px;
+    stroke: #ff6b6b;
+}
+
+.reason-title {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: #1a1a1a;
+}
+
+.reason-description {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.6;
+}
