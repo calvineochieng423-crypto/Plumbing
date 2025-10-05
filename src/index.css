@@ -4,4 +4,10 @@
   box-sizing: border-box;
   color: #37353E;
   font-family: Georgia, 'Times New Roman', Times, serif;
+
+  button.p-2.rounded.bg-blue-500.text-white {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
 }

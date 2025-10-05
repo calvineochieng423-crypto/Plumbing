@@ -1,15 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { db } from "../firebase";
-import {
-  collection,
-  onSnapshot,
-  addDoc,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
 import "./Testimonial.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -85,7 +76,7 @@ const staticTestimonials: Testimonial[] = [
 ];
 
 export default function TestimonialSection() {
-  const [liveTestimonials, setLiveTestimonials] = useState<Testimonial[]>([]);
+  const [feedbacks, setFeedbacks] = useState<Testimonial[]>([]);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -100,24 +91,14 @@ export default function TestimonialSection() {
 
   const marqueeRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const messageRef = useRef<HTMLParagraphElement>(null);
 
-  useEffect(() => {
-    const unsub = onSnapshot(collection(db, "testimonials"), (snapshot) => {
-      const firestoreData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<Testimonial, "id">),
-      }));
-      setLiveTestimonials(firestoreData);
-    });
-    return () => unsub();
-  }, []);
-
+  // GSAP Marquee animation
   useEffect(() => {
     if (!marqueeRef.current) return;
     const marquee = marqueeRef.current;
-
     const tl = gsap.timeline({ repeat: -1, defaults: { ease: "none" } });
-    tl.to(marquee, { xPercent: -150, duration: 100 });
+    tl.to(marquee, { xPercent: -500, duration: 300 });
 
     const pause = () => tl.pause();
     const resume = () => tl.resume();
@@ -132,9 +113,9 @@ export default function TestimonialSection() {
     };
   }, []);
 
+  // GSAP scroll trigger
   useEffect(() => {
     if (!sectionRef.current) return;
-
     gsap.to(sectionRef.current, {
       y: -100,
       ease: "none",
@@ -147,7 +128,7 @@ export default function TestimonialSection() {
     });
   }, []);
 
-  const allTestimonials = [...staticTestimonials, ...liveTestimonials];
+  const allTestimonials = [...staticTestimonials, ...feedbacks];
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -155,55 +136,53 @@ export default function TestimonialSection() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.message) return;
 
-    try {
-      setSubmitting(true);
-      setResponse({ type: "", message: "" });
+    setSubmitting(true);
+    setResponse({ type: "", message: "" });
 
-      const q = query(
-        collection(db, "testimonials"),
-        where("name", "==", form.name),
-        where("message", "==", form.message)
+    setTimeout(() => {
+      const duplicate = feedbacks.find(
+        (f) => f.name === form.name && f.message === form.message
       );
-      const snapshot = await getDocs(q);
-
-      if (!snapshot.empty) {
+      if (duplicate) {
         setResponse({
           type: "error",
           message: "You already submitted this exact feedback.",
         });
-        return;
+      } else {
+        const newFeedback: Testimonial = {
+          id: Date.now().toString(),
+          name: form.name,
+          message: form.message,
+          image: form.image || "https://via.placeholder.com/100",
+        };
+        setFeedbacks((prev) => [...prev, newFeedback]);
+        setForm({ name: "", email: "", message: "", image: "" });
+        setResponse({
+          type: "success",
+          message: "Thank you! Your feedback has been sent.",
+        });
+
+        // Animate message with GSAP
+        if (messageRef.current) {
+          gsap.fromTo(
+            messageRef.current,
+            { opacity: 0, y: -10 },
+            { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
+          );
+        }
       }
 
-      await addDoc(collection(db, "testimonials"), {
-        name: form.name,
-        email: form.email,
-        message: form.message,
-        image: form.image || "https://via.placeholder.com/100",
-        createdAt: new Date(),
-      });
-
-      setForm({ name: "", email: "", message: "", image: "" });
-      setResponse({
-        type: "success",
-        message: " Thank you! Your feedback has been sent.",
-      });
-    } catch (err) {
-      console.error("Error adding testimonial:", err);
-      setResponse({
-        type: "error",
-        message: " Something went wrong. Please try again.",
-      });
-    } finally {
       setSubmitting(false);
-    }
+      setTimeout(() => setResponse({ type: "", message: "" }), 5000);
+    }, 1000);
   };
 
   return (
-    <div className="testimonial-wrapper" ref={sectionRef} id="#Testimonials">
+    <div className="testimonial-wrapper" ref={sectionRef} id="Testimonials">
       <section className="testimonial-section">
         <h2 className="testimonial-heading">What Our Customers Say</h2>
 
@@ -223,6 +202,20 @@ export default function TestimonialSection() {
         {/* Feedback form */}
         <div className="testimonial-form-box">
           <h3 className="form-title">Leave Your Feedback</h3>
+
+          {response.message && (
+            <p
+              ref={messageRef}
+              className={`form-response ${
+                response.type === "success"
+                  ? "success-message"
+                  : "error-message"
+              }`}
+            >
+              {response.message}
+            </p>
+          )}
+
           <form className="testimonial-form" onSubmit={handleSubmit}>
             <div className="form-group">
               <input
@@ -271,17 +264,6 @@ export default function TestimonialSection() {
               {submitting ? "Sending..." : "Send Feedback"}
             </button>
           </form>
-
-          {/* Response message */}
-          {response.message && (
-            <p
-              className={`form-response ${
-                response.type === "success" ? "success" : "error"
-              }`}
-            >
-              {response.message}
-            </p>
-          )}
         </div>
       </section>
     </div>

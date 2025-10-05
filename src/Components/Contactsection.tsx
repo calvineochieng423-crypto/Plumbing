@@ -1,14 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./Contactsection.css";
-import { db } from "../firebase";
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  onSnapshot,
-  query,
-  orderBy,
-} from "firebase/firestore";
 import TestimonialSection from "./Testimonialsection";
 
 interface Message {
@@ -16,7 +7,7 @@ interface Message {
   name: string;
   email: string;
   message: string;
-  timestamp?: any;
+  timestamp: Date;
 }
 
 export default function Contactsection() {
@@ -27,39 +18,31 @@ export default function Contactsection() {
 
   const [messages, setMessages] = useState<Message[]>([]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("Sending...");
 
     try {
-      await addDoc(collection(db, "contacts"), {
+      const newMessage: Message = {
+        id: Date.now().toString(),
         name,
         email,
         message,
-        timestamp: serverTimestamp(),
-      });
-      setStatus("Message sent successfully!");
+        timestamp: new Date(),
+      };
+
+      setMessages([newMessage, ...messages]);
       setName("");
       setEmail("");
       setMessage("");
+      setStatus("Message sent successfully!");
+
+      setTimeout(() => setStatus(""), 8000);
     } catch (err) {
       console.error(err);
       setStatus("Error sending message.");
     }
   };
-
-  useEffect(() => {
-    const q = query(collection(db, "contacts"), orderBy("timestamp", "desc"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const msgs: Message[] = [];
-      snapshot.forEach((doc) =>
-        msgs.push({ id: doc.id, ...(doc.data() as Omit<Message, "id">) })
-      );
-      setMessages(msgs);
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   return (
     <>

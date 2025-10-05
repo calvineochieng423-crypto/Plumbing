@@ -115,31 +115,6 @@
   border: 1px solid #0077ff;
 }
 
-.rating-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.rating-stars {
-  display: flex;
-  gap: 0.3rem;
-  margin-top: 0.5rem;
-}
-
-.rating-stars input {
-  display: none;
-}
-
-.rating-stars label {
-  font-size: 1.5rem;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.rating-stars label:hover {
-  transform: scale(1.2);
-}
-
 .submit-btn {
   width: 100%;
   padding: 1rem;
@@ -161,6 +136,17 @@
   background: #e6ffed;
   color: #2d7a46;
   border: 1px solid #a3e6b1;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  font-weight: 500;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.error-message {
+  background: #ffe6e6;
+  color: #a12d2d;
+  border: 1px solid #e6a3a3;
   padding: 10px;
   margin-bottom: 15px;
   border-radius: 6px;
